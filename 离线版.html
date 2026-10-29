@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>半导体平台运维知识库</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:#f8fafc;color:#1e293b;line-height:1.85}
+.wrap{display:flex;max-width:1500px;margin:0 auto;gap:0}
+/* 侧栏 */
+.toc{position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;
+  width:250px;flex:0 0 250px;background:#0f172a;padding:22px 14px}
+.toc h1{font-size:15px;color:#fff;font-weight:700;margin-bottom:4px;padding:0 8px}
+.toc .tip{font-size:11px;color:#64748b;padding:0 8px 14px;border-bottom:1px solid #1e293b;margin-bottom:12px}
+.toc_item{display:flex;gap:9px;align-items:baseline;text-decoration:none;
+  color:#94a3b8;font-size:12.5px;padding:7px 9px;border-radius:7px;margin-bottom:2px}
+.toc_item:hover{background:#1e293b;color:#22d3ee}
+.toc_item .num{font-size:10px;color:#475569;font-weight:700;font-variant-numeric:tabular-nums}
+/* 正文 */
+main{flex:1;min-width:0;padding:34px 44px 80px;background:#fff}
+section{margin-bottom:56px;scroll-margin-top:20px}
+.sec_head{display:flex;align-items:baseline;gap:12px;border-bottom:2px solid #0e7490;
+  padding-bottom:9px;margin-bottom:20px}
+.sec_num{font-size:12px;font-weight:700;color:#0e7490;background:#e0f2fe;
+  padding:3px 8px;border-radius:6px}
+.sec_head h2{font-size:21px;font-weight:700;color:#0f172a}
+.sec_sub{font-size:12px;color:#94a3b8;margin-left:auto}
+section h1{font-size:19px;margin:22px 0 10px;color:#0f172a}
+section h2{font-size:17px;margin:26px 0 10px;color:#0e7490;padding-left:10px;border-left:4px solid #0e7490}
+section h3{font-size:14.5px;margin:18px 0 8px;color:#0f172a}
+section p{margin:9px 0}
+section ul,section ol{margin:9px 0 9px 24px}
+section li{margin:4px 0}
+section table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+section th{background:#f1f5f9;text-align:left;padding:9px 11px;border:1px solid #e2e8f0;
+  font-weight:700;color:#0f172a;font-size:13px}
+section td{padding:8px 11px;border:1px solid #e2e8f0;vertical-align:top}
+section tr:nth-child(even) td{background:#fafcfe}
+section code{background:#f1f5f9;color:#0e7490;padding:1.5px 5px;border-radius:4px;
+  font-family:'JetBrains Mono',Consolas,monospace;font-size:12.5px}
+section pre{background:#0f172a;color:#e2e8f0;padding:15px 17px;border-radius:9px;
+  overflow-x:auto;margin:13px 0}
+section pre code{background:none;color:#e2e8f0;padding:0;font-size:12.5px;line-height:1.7}
+section blockquote{border-left:4px solid #fbbf24;background:#fffbeb;padding:11px 16px;
+  margin:13px 0;color:#78350f;border-radius:0 7px 7px 0;font-size:13.5px}
+section blockquote p{margin:4px 0}
+section hr{border:none;border-top:1px dashed #cbd5e1;margin:24px 0}
+section strong{color:#0f172a;font-weight:700}
+@media(max-width:820px){
+  .wrap{flex-direction:column}
+  .toc{position:relative;height:auto;width:100%;flex:none;
+    display:flex;flex-wrap:wrap;gap:5px;padding:14px 12px}
+  .toc h1,.toc .tip{width:100%}
+  .toc_item{font-size:11.5px;padding:5px 8px;background:#1e293b}
+  main{padding:22px 16px 60px}
+  .sec_sub{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="toc">
+    <h1>运维知识库</h1>
+    <div class="tip">离线单文件 · 双击即开<br>Ctrl+F 可全文搜索</div>
+    <a class="toc_item" href="#sec1"><span class="num">01</span>首页</a>
+<a class="toc_item" href="#sec2"><span class="num">02</span>使用说明</a>
+<a class="toc_item" href="#sec3"><span class="num">03</span>Linux 命令</a>
+<a class="toc_item" href="#sec4"><span class="num">04</span>Kafka 命令</a>
+<a class="toc_item" href="#sec5"><span class="num">05</span>Oracle 命令</a>
+<a class="toc_item" href="#sec6"><span class="num">06</span>RTD 术语</a>
+<a class="toc_item" href="#sec7"><span class="num">07</span>数据同步架构</a>
+<a class="toc_item" href="#sec8"><span class="num">08</span>三步定位法</a>
+<a class="toc_item" href="#sec9"><span class="num">09</span>队列积压怎么查</a>
+<a class="toc_item" href="#sec10"><span class="num">10</span>复盘模板</a>
+<a class="toc_item" href="#sec11"><span class="num">11</span>半导体工艺流程</a>
+<a class="toc_item" href="#sec12"><span class="num">12</span>产出模板</a>
+  </nav>
+  <main>
+
+<section id="sec1">
+  <div class="sec_head"><span class="sec_num">01</span><h2>首页</h2><span class="sec_sub">起点</span></div>
+  <blockquote>
+<p>这里只放<strong>能带走的东西</strong>：方法、复盘、速查。不放公司机密。</p>
+</blockquote>
+<h2>为什么建这个</h2>
+<p>工作上遇到的东西，不写下来就会忘。<br />
+写下来了、还分类放好、还能随时搜到 —— 那才是你的能力。</p>
+<h2>怎么用</h2>
+<table>
+<thead>
+<tr>
+<th>我遇到什么</th>
+<th>去哪</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>命令忘了怎么写</td>
+<td><strong>01 速查</strong></td>
+</tr>
+<tr>
+<td>听不懂一个词</td>
+<td><strong>02 术语</strong></td>
+</tr>
+<tr>
+<td>想回忆系统怎么串的</td>
+<td><strong>03 架构</strong></td>
+</tr>
+<tr>
+<td>想知道"这类问题怎么查"</td>
+<td><strong>04 方法</strong></td>
+</tr>
+<tr>
+<td>刚解决了一个问题</td>
+<td><strong>05 复盘</strong>（写四行）</td>
+</tr>
+<tr>
+<td>想搞懂业务</td>
+<td><strong>06 业务</strong></td>
+</tr>
+<tr>
+<td>要交东西给别人</td>
+<td><strong>07 产出</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>一条纪律</h2>
+<p><strong>每天下班 5 分钟，把一个问题的答案写进 05 复盘。</strong></p>
+<p>不求好看，只求连续。</p>
+</section>
+
+<section id="sec2">
+  <div class="sec_head"><span class="sec_num">02</span><h2>使用说明</h2><span class="sec_sub">怎么用这份知识库</span></div>
+  <h2>这是什么</h2>
+<p><b>一个 HTML 文件，双击就打开。</b><br />
+不需要网络、不需要账号、不需要任何服务。<br />
+手机上也能开：把它发到自己微信里点开就行。</p>
+<h2>可选：如果你想做成一个网站</h2>
+<p><b>不想开外网就跳过这一节</b> —— 离线文件已经够用了。<br />
+只有在「想用手机随时打开、又不想每次都找文件」时，才需要往下做。</p>
+<p><strong>第 1 步：建仓库</strong><br />
+GitHub 上新建一个仓库，名字随意（比如 <code>kb</code>），<strong>建议选 Private</strong>。</p>
+<p><strong>第 2 步：上传</strong><br />
+把这个文件夹里所有文件上传到仓库根目录。<br />
+（网页上点 <code>Add file → Upload files</code>，整个文件夹拖进去就行）</p>
+<p><strong>第 3 步：开 Pages</strong><br />
+仓库 → <code>Settings</code> → 左侧 <code>Pages</code> → Source 选 <code>Deploy from a branch</code> → 分支选 <code>main</code>、目录选 <code>/ (root)</code> → <code>Save</code>。</p>
+<p>等 1 分钟，访问：</p>
+<pre><code>https://你的用户名.github.io/kb/
+</code></pre>
+<p><strong>手机存成书签，以后随时点开。</strong></p>
+<blockquote>
+<p>⚠️ 注意：Private 仓库 + Pages 需要 GitHub 付费版。<br />
+免费版只能用 <strong>Public 仓库</strong> —— 所以<strong>内容必须脱敏</strong>（不写 IP、客户名、真实数据）。<br />
+这也是我们一开始就定的规矩：只写方法和思路。</p>
+</blockquote>
+<h2>日常更新</h2>
+<p>改 <code>.md</code> 文件 → 提交 → 1 分钟后网站自动更新。<strong>不用重新部署。</strong></p>
+<h2>手机上也能写</h2>
+<p>GitHub 手机 App 里可以直接编辑 Markdown 文件。<br />
+出差在路上想记一条，打开 App 改一下就行。</p>
+<h2>换个域名（可选）</h2>
+<p>在仓库根目录加一个 <code>CNAME</code> 文件，里面写你的域名。<br />
+如果你有自己的域名，绑定上去，链接更好记。</p>
+</section>
+
+<section id="sec3">
+  <div class="sec_head"><span class="sec_num">03</span><h2>Linux 命令</h2><span class="sec_sub">只读诊断命令</span></div>
+  <blockquote>
+<p>全部是<strong>只读</strong>命令，生产上可以直接跑。</p>
+</blockquote>
+<h2>先确认自己在哪台机</h2>
+<pre><code class="language-bash">hostname -I          # 看 IP，避免在错误的机器上操作
+uptime               # 跑了多久、负载多少
+who                  # 谁在线
+</code></pre>
+<blockquote>
+<p>负载怎么看：<code>load average</code> 三个数是 1/5/15 分钟平均。<br />
+<strong>超过 CPU 核数就是过载</strong>。核数：<code>nproc</code></p>
+</blockquote>
+<h2>看进程和端口</h2>
+<pre><code class="language-bash">ps -ef | grep java | grep -v grep        # 所有 Java 进程（带 jar 路径）
+ss -lntp                                 # 监听的端口 + 对应进程
+ss -lntp | grep 9090                     # 只看某个端口
+lsof -p &lt;PID&gt; | head -30                 # 某进程打开了哪些文件
+</code></pre>
+<h2>看资源</h2>
+<pre><code class="language-bash">df -h                    # 磁盘（先看这个，最常见）
+df -i                    # inode（磁盘没满但写不进去，就是它）
+free -h                  # 内存
+top -b -n1 | head -20    # CPU 占用前几名
+iostat -x 1 3            # 磁盘 IO（需要 sysstat）
+</code></pre>
+<h2>看日志</h2>
+<pre><code class="language-bash">tail -f /path/app.log                    # 实时跟
+tail -n 200 /path/app.log                # 看最后 200 行
+grep -i error /path/app.log | tail -30   # 只看错误
+grep &quot;$(date +%F)&quot; /path/app.log | tail  # 只看今天
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>不要 <code>cat</code> 几百 MB 的日志</strong>，会把终端卡死，也会给机器压力。<br />
+用 <code>tail</code> / <code>grep</code> / <code>less</code>。</p>
+</blockquote>
+<h2>找文件和目录</h2>
+<pre><code class="language-bash">find /opt -name '*.jar' 2&gt;/dev/null | head -20
+find /opt -type d -iname '*log*' 2&gt;/dev/null
+du -sh /opt/* 2&gt;/dev/null | sort -h | tail -10   # 哪些目录最占空间
+</code></pre>
+<h2>服务管理（CentOS 7）</h2>
+<pre><code class="language-bash">systemctl status &lt;服务名&gt;     # 状态（只读）
+systemctl list-units --type=service --state=running   # 在跑的服务
+journalctl -u &lt;服务名&gt; -n 100 --no-pager              # 服务日志
+</code></pre>
+<h2>什么时候用什么</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>先看</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>程序起不来</td>
+<td><code>systemctl status</code> + <code>journalctl</code></td>
+</tr>
+<tr>
+<td>连不上</td>
+<td><code>ss -lntp</code> 看端口在不在听</td>
+</tr>
+<tr>
+<td>写不进去</td>
+<td><code>df -h</code>、<code>df -i</code></td>
+</tr>
+<tr>
+<td>变慢了</td>
+<td><code>top</code>、<code>iostat</code>、<code>uptime</code></td>
+</tr>
+<tr>
+<td>不知道装在哪</td>
+<td><code>ps -ef</code> 看启动命令里的路径</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section id="sec4">
+  <div class="sec_head"><span class="sec_num">04</span><h2>Kafka 命令</h2><span class="sec_sub">3.5.1 版</span></div>
+  <blockquote>
+<p>⚠️ <strong>3.5.1 没有 <code>--zookeeper</code> 参数了</strong>，全部用 <code>--bootstrap-server</code>。<br />
+下面标 🟢 的只读，🟡 的会改状态。</p>
+</blockquote>
+<h2>设个变量，少打字</h2>
+<pre><code class="language-bash">export KAFKA_HOME=/opt/kafka          # 改成你的实际路径
+export BS=10.0.0.1:9092               # 改成你的 broker 地址
+</code></pre>
+<h2>🟢 健康检查</h2>
+<pre><code class="language-bash">$KAFKA_HOME/bin/kafka-broker-api-versions.sh --bootstrap-server $BS | head
+
+$KAFKA_HOME/bin/kafka-topics.sh --bootstrap-server $BS --list
+
+$KAFKA_HOME/bin/kafka-topics.sh --bootstrap-server $BS --describe --topic &lt;topic名&gt;
+
+$KAFKA_HOME/bin/kafka-topics.sh --bootstrap-server $BS --under-replicated-partitions
+</code></pre>
+<blockquote>
+<p><code>--describe</code> 重点看三列：<br />
+- <strong>Leader</strong>：-1 说明这个分区没有主，等于不可用<br />
+- <strong>Replicas / Isr</strong>：Isr 少了副本 = 有 broker 掉了<br />
+- <strong>Under-replicated</strong> 有输出 = 副本不同步，要查</p>
+</blockquote>
+<h2>🟢 消费组（排查积压必用）</h2>
+<pre><code class="language-bash">$KAFKA_HOME/bin/kafka-consumer-groups.sh --bootstrap-server $BS --list
+
+$KAFKA_HOME/bin/kafka-consumer-groups.sh --bootstrap-server $BS --describe --group &lt;组名&gt;
+</code></pre>
+<blockquote>
+<p><strong>LAG = 积压量</strong>。LAG 一直涨 = 消费跟不上（消费端慢了或者挂了）。<br />
+LAG 不涨但也不降 = 消费端卡住了。</p>
+</blockquote>
+<h2>🟡 改状态（生产上先问研发）</h2>
+<pre><code class="language-bash"># 修改 topic 分区数（只能增不能减）
+$KAFKA_HOME/bin/kafka-topics.sh --bootstrap-server $BS --alter --topic &lt;topic&gt; --partitions 6
+
+# 动态改配置（不用重启）
+$KAFKA_HOME/bin/kafka-configs.sh --bootstrap-server $BS --alter --entity-type topics --entity-name &lt;topic&gt; --add-config retention.ms=604800000
+</code></pre>
+<h2>🟡 重置消费位移（危险，先 dry-run）</h2>
+<pre><code class="language-bash">$KAFKA_HOME/bin/kafka-consumer-groups.sh --bootstrap-server $BS --group &lt;组名&gt; \
+  --reset-offsets --to-earliest --topic &lt;topic&gt; --dry-run
+
+# 确认无误后，把 --dry-run 换成 --execute
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>必须停掉消费者再重置</strong>，否则会乱。<br />
+⚠️ 生产上<strong>不要随便用 <code>--from-beginning</code></strong> 读数据，IO 压力大。</p>
+</blockquote>
+<h2>常见故障对照</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>先查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>消费积压涨</td>
+<td><code>--describe --group</code> 看 LAG；再查消费端进程</td>
+</tr>
+<tr>
+<td>分区不可用</td>
+<td><code>--describe --topic</code> 看 Leader 是不是 -1</td>
+</tr>
+<tr>
+<td>副本不同步</td>
+<td><code>--under-replicated-partitions</code></td>
+</tr>
+<tr>
+<td>生产发不进去</td>
+<td>看 broker 是否 <code>acks</code> 超时、磁盘满没满</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section id="sec5">
+  <div class="sec_head"><span class="sec_num">05</span><h2>Oracle 命令</h2><span class="sec_sub">只读查询</span></div>
+  <blockquote>
+<p>全部只读。用<strong>监控账号</strong>跑，别用 sysdba。</p>
+</blockquote>
+<h2>连库</h2>
+<pre><code class="language-bash">sqlplus 用户名/密码@//主机:1521/服务名
+</code></pre>
+<p>进库后先设置好显示格式：</p>
+<pre><code class="language-sql">SET LINESIZE 200
+SET PAGESIZE 100
+SET NUMWIDTH 12
+</code></pre>
+<h2>看表空间（最常查）</h2>
+<pre><code class="language-sql">SELECT tablespace_name,
+       ROUND(SUM(bytes)/1024/1024/1024, 2) AS 总GB
+  FROM dba_data_files
+ GROUP BY tablespace_name;
+
+SELECT tablespace_name,
+       ROUND(SUM(bytes)/1024/1024/1024, 2) AS 空闲GB
+  FROM dba_free_space
+ GROUP BY tablespace_name;
+</code></pre>
+<h2>看会话和锁</h2>
+<pre><code class="language-sql">-- 当前会话
+SELECT sid, serial#, username, status, machine, program
+  FROM v$session
+ WHERE username IS NOT NULL;
+
+-- 有没有阻塞
+SELECT blocking_session, sid, serial#, event, seconds_in_wait
+  FROM v$session
+ WHERE blocking_session IS NOT NULL;
+
+-- 锁等待
+SELECT * FROM v$lock WHERE block &gt; 0;
+</code></pre>
+<h2>看慢 SQL</h2>
+<pre><code class="language-sql">SELECT sql_id, elapsed_time/1000000 AS 秒, executions, sql_text
+  FROM v$sql
+ ORDER BY elapsed_time DESC
+ FETCH FIRST 20 ROWS ONLY;
+</code></pre>
+<h2>看进程数（ORA-00020 报错时查）</h2>
+<pre><code class="language-sql">SELECT resource_name, current_utilization, limit_value
+  FROM v$resource_limit
+ WHERE resource_name IN ('sessions','processes');
+</code></pre>
+<h2>找表</h2>
+<pre><code class="language-sql">-- 按名字模糊找表
+SELECT owner, table_name FROM all_tables
+ WHERE table_name LIKE '%RULE%' ORDER BY owner, table_name;
+
+-- 看表结构
+SELECT column_name, data_type, data_length
+  FROM all_tab_columns
+ WHERE table_name = '表名大写' ORDER BY column_id;
+</code></pre>
+<h2>⚠️ 纪律</h2>
+<ul>
+<li><strong>只读</strong>：只用 <code>SELECT</code>。要 <code>UPDATE/DELETE</code> 先找研发确认。</li>
+<li><strong>别查全表</strong>：大表加 <code>WHERE</code> 和 <code>FETCH FIRST</code>。</li>
+<li><strong>别在业务高峰跑重查询</strong>：会拖慢业务。</li>
+</ul>
+</section>
+
+<section id="sec6">
+  <div class="sec_head"><span class="sec_num">06</span><h2>RTD 术语</h2><span class="sec_sub">派工 / 指标 / 组件</span></div>
+  <blockquote>
+<p>遇到不懂的词就加一行。<strong>一行一个，别写长。</strong></p>
+</blockquote>
+<h2>派工核心</h2>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>一句话</th>
+<th>在哪出现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RTD</strong></td>
+<td>实时派工，系统自动决定"哪批上哪台"</td>
+<td>系统名、Rule 文件</td>
+</tr>
+<tr>
+<td><strong>Lot</strong></td>
+<td>批次，一次跑的一批晶圆</td>
+<td>界面、日志</td>
+</tr>
+<tr>
+<td><strong>WIP</strong></td>
+<td>在制品，全厂还没做完的货</td>
+<td>报表、监控</td>
+</tr>
+<tr>
+<td><strong>Step</strong></td>
+<td>工序，路线上的一个步骤</td>
+<td>Route</td>
+</tr>
+<tr>
+<td><strong>Recipe</strong></td>
+<td>配方，机台跑某工序的那套参数</td>
+<td>机台、规则</td>
+</tr>
+<tr>
+<td><strong>Capability</strong></td>
+<td>机台能力，这台机能不能做</td>
+<td>规则筛选</td>
+</tr>
+<tr>
+<td><strong>Dedication</strong></td>
+<td>专机专用，只能上指定机台</td>
+<td>规则</td>
+</tr>
+<tr>
+<td><strong>Changeover</strong></td>
+<td>换型，换 recipe 花的时间</td>
+<td>排序规则</td>
+</tr>
+<tr>
+<td><strong>Q-time</strong></td>
+<td>工序间最长等待时限，超了返工或报废</td>
+<td>规则、告警</td>
+</tr>
+<tr>
+<td><strong>Hold</strong></td>
+<td>扣留，品质异常被卡住的货</td>
+<td>状态</td>
+</tr>
+<tr>
+<td><strong>PM</strong></td>
+<td>预防性维护，机台定期停机</td>
+<td>机台状态</td>
+</tr>
+<tr>
+<td><strong>Tie-break</strong></td>
+<td>同分时按什么决先后</td>
+<td>排序规则</td>
+</tr>
+</tbody>
+</table>
+<h2>指标</h2>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cycle Time</strong></td>
+<td>从投料到完工的总时间</td>
+</tr>
+<tr>
+<td><strong>Move</strong></td>
+<td>单位时间完成的工序数</td>
+</tr>
+<tr>
+<td><strong>Utilization</strong></td>
+<td>机台真正在跑的比例</td>
+</tr>
+<tr>
+<td><strong>Yield</strong></td>
+<td>良率</td>
+</tr>
+<tr>
+<td><strong>Bottleneck</strong></td>
+<td>瓶颈：产能最低那道工序/机台</td>
+</tr>
+</tbody>
+</table>
+<h2>数据同步组件（我们这套）</h2>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>干什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>qtable</strong></td>
+<td>变更事件表，MES 触发器写进来</td>
+</tr>
+<tr>
+<td><strong>data-sender</strong></td>
+<td>从 qtable 抽数据发到 Kafka</td>
+</tr>
+<tr>
+<td><strong>data-sinker</strong></td>
+<td>从 Kafka 取数据写目标库</td>
+</tr>
+<tr>
+<td><strong>data-history</strong></td>
+<td>写同步履历到 MongoDB</td>
+</tr>
+<tr>
+<td><strong>admin</strong></td>
+<td>配置客户端，改 trigger 配置</td>
+</tr>
+<tr>
+<td><strong>aqm</strong></td>
+<td>低代码平台，配流程</td>
+</tr>
+<tr>
+<td><strong>engine</strong></td>
+<td>跑 RTD rule 的 Java 程序</td>
+</tr>
+<tr>
+<td><strong>haproxy / VIP</strong></td>
+<td>负载分发</td>
+</tr>
+</tbody>
+</table>
+<h2>记法</h2>
+<blockquote>
+<p><strong>看不懂的缩写，先记下来，再去问"它在哪出现"。</strong><br />
+知道它在哪个界面/哪张表出现，比背定义有用得多。</p>
+</blockquote>
+</section>
+
+<section id="sec7">
+  <div class="sec_head"><span class="sec_num">07</span><h2>数据同步架构</h2><span class="sec_sub">全链路 + 自测题</span></div>
+  <blockquote>
+<p>⚠️ <strong>脱敏版</strong>：这里不写真 IP、不写客户名。只写结构和数据流。</p>
+</blockquote>
+<h2>一、整体链路（增量）</h2>
+<pre><code>MES(Oracle)
+   │  ① 增删改触发器，写变更事件
+   ▼
+qtable（变更事件表）        ← 不同表对不同的 qtable
+   │  ② 每 200ms 抽取已提交数据
+   ▼
+data-sender ──序列化成 JSON──▶ Kafka
+                                 │  ③ 最长 1s 一批
+                                 ▼
+                          data-sinker ──▶ 目标库（写库）
+                                 │  ④ 发同步履历
+                                 ▼
+                              Kafka
+                                 │
+                                 ▼
+                          data-history ──▶ MongoDB
+</code></pre>
+<p><strong>要点：</strong><br />
+- <code>sender / sinker / history</code> 都是 <strong>Java jar</strong><br />
+- <strong>每个 qtable 对应一整套 jar</strong> → 进程数 = qtable 数 × 3 × 实例数<br />
+- 同步<strong>只走主写库</strong>；业务 RTD 读<strong>读库</strong>；还有<strong>备库</strong><br />
+- 三个库之间靠 <strong>数据库自带复制</strong>保持一致</p>
+<h2>二、全量链路</h2>
+<pre><code>admin 客户端 ──请求──▶ sender
+                        │ 从 MES 导出 CSV
+                        ▼
+                      sinker ──▶ 目标库写入
+                        │
+                        ▼
+                      history ──▶ MongoDB
+</code></pre>
+<h2>三、事件闭环（trigger 配置怎么生效）</h2>
+<pre><code>sinker 发现满足触发条件
+   │ HTTP
+   ▼
+aqm（低代码平台，含 repository event 节点的流程）
+   │ 固定调 VIP:23456
+   ▼
+keepalived + haproxy（2 台）分发
+   │
+   ▼
+engine 集群（跑 RTD rule 的 Java 程序）
+   │ 发 trigger 消息
+   ▼
+admin（读 ip/port）
+   │ 更新各 sinker 的 trigger 配置
+   ▼
+sinker 重新加载配置
+</code></pre>
+<h2>四、MES ↔ RTD 怎么通信</h2>
+<pre><code>MES ──发布消息──▶ RabbitMQ ──▶ engine（定时拉取处理）
+                                  │
+                                  ▼
+                             结果消息 ──▶ RabbitMQ ──▶ MES 取回
+</code></pre>
+<p><strong>注意：这里和上面是两条不同的队列</strong> —— 同步用 Kafka，RTD 调用用 RabbitMQ。别搞混。</p>
+<h2>五、我要能答得出的问题</h2>
+<ul>
+<li>[ ] 一批数据从 MES 到目标库，<strong>最长可能延迟多久</strong>？（各段相加）</li>
+<li>[ ] 某张表不同步了，<strong>第一件事查哪</strong>？</li>
+<li>[ ] Kafka 积压了，是<strong>生产快还是消费慢</strong>？</li>
+<li>[ ] trigger 配置改了，<strong>谁去通知 sinker</strong>？</li>
+<li>[ ] 主写库挂了，<strong>业务会怎样</strong>？</li>
+</ul>
+<blockquote>
+<p>能答出这五个，这条链路就算真懂了。</p>
+</blockquote>
+<h2>六、待补</h2>
+<ul>
+<li>[ ] 各段实测延迟数字</li>
+<li>[ ] 部署拓扑（几台、怎么分）</li>
+<li>[ ] 关键表名（<strong>脱敏后</strong>记录）</li>
+</ul>
+</section>
+
+<section id="sec8">
+  <div class="sec_head"><span class="sec_num">08</span><h2>三步定位法</h2><span class="sec_sub">通用排查方法</span></div>
+  <blockquote>
+<p>任何故障都先走这三步，<strong>能解决 80% 的问题</strong>。</p>
+</blockquote>
+<h2>第一步：分清"是谁的问题"</h2>
+<p>系统里永远只有三种角色：</p>
+<ol>
+<li><strong>生产端</strong>（有人往里写吗？）</li>
+<li><strong>中间件</strong>（数据在管道里吗？）</li>
+<li><strong>消费端</strong>（有人取出来处理吗？）</li>
+</ol>
+<p><strong>先确认哪一段断了，别一上来就重启。</strong></p>
+<h2>第二步：找"卡在哪个点"</h2>
+<p>按数据流顺序，从<strong>上游往下游</strong>推：</p>
+<pre><code>上游有没有数据产生？  没有 → 问题在上游
+       │有
+       ▼
+中间件有没有积压？    积压 → 问题在消费端慢/挂
+       │没积压
+       ▼
+下游有没有写入？      没写 → 问题在消费逻辑
+</code></pre>
+<p><strong>每一步只需要一个判断，不要同时查三个。</strong></p>
+<h2>第三步：确认改动前先备份</h2>
+<p>要动配置/重启之前：</p>
+<ol>
+<li><strong>先导出当前状态</strong>（<code>ps</code>、配置、库里的记录）</li>
+<li>想清楚<strong>如果错了怎么退回去</strong></li>
+<li>再动手</li>
+</ol>
+<blockquote>
+<p><strong>没有回滚方案，就不要改生产。</strong></p>
+</blockquote>
+<h2>什么时候用这个</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>用哪步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据不同步</td>
+<td>第一 + 第二步</td>
+</tr>
+<tr>
+<td>服务起不来</td>
+<td>第一步（看日志）</td>
+</tr>
+<tr>
+<td>慢了/积压</td>
+<td>第二步</td>
+</tr>
+<tr>
+<td>要改配置</td>
+<td>第三步</td>
+</tr>
+</tbody>
+</table>
+<h2>一句话</h2>
+<p><strong>先定位，再动手。</strong> 90% 的"越修越坏"，都是因为没定位就动手。</p>
+</section>
+
+<section id="sec9">
+  <div class="sec_head"><span class="sec_num">09</span><h2>队列积压怎么查</h2><span class="sec_sub">最常见的故障</span></div>
+  <blockquote>
+<p>这是同步链路最常见的故障。<strong>别急着重启，先看数字。</strong></p>
+</blockquote>
+<h2>先分清两种积压</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>含义</th>
+<th>方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LAG 持续上涨</strong></td>
+<td>生产速度 &gt; 消费速度</td>
+<td>消费端性能问题</td>
+</tr>
+<tr>
+<td><strong>LAG 不涨也不降</strong></td>
+<td>消费端完全卡住</td>
+<td>消费端挂了/死锁</td>
+</tr>
+<tr>
+<td><strong>LAG 归零但有延迟</strong></td>
+<td>队列正常，下游写入慢</td>
+<td>查目标库</td>
+</tr>
+</tbody>
+</table>
+<h2>排查顺序（照做）</h2>
+<p><strong>① 确认积压量</strong></p>
+<pre><code class="language-bash"># Kafka
+kafka-consumer-groups.sh --bootstrap-server &lt;地址&gt; --describe --group &lt;组名&gt;
+</code></pre>
+<p>看 <strong>LAG</strong> 那一列。</p>
+<p><strong>② 确认消费进程活着</strong></p>
+<pre><code class="language-bash">ps -ef | grep &lt;进程关键字&gt; | grep -v grep
+</code></pre>
+<p><strong>进程在 ≠ 在干活。</strong> 还要看：</p>
+<pre><code class="language-bash">top -p &lt;PID&gt;              # CPU 是不是一直很高（可能是死循环）
+lsof -p &lt;PID&gt; | grep -c REG   # 打开的文件数是不是暴涨（可能句柄泄漏）
+</code></pre>
+<p><strong>③ 看消费端日志</strong></p>
+<pre><code class="language-bash">tail -n 200 &lt;消费端日志&gt; | grep -iE 'error|exception|timeout|retry'
+</code></pre>
+<p><strong>④ 看下游</strong></p>
+<p>如果消费进程正常但就是慢：</p>
+<ul>
+<li>目标库连接池满了？（<code>v$resource_limit</code>）</li>
+<li>目标库有锁？（<code>v$session</code> 里 <code>blocking_session</code>）</li>
+<li>磁盘 IO 打满？（<code>iostat -x</code>）</li>
+</ul>
+<h2>三种典型结论</h2>
+<p><strong>结论 A：消费进程挂了</strong><br />
+→ 看日志找原因，修完重启。<strong>先确认生产端数据没丢。</strong></p>
+<p><strong>结论 B：消费进程活着但处理慢</strong><br />
+→ 看单条处理耗时。是不是某类数据特别慢？是不是 N+1 查库？</p>
+<p><strong>结论 C：一切正常但 LAG 就是高</strong><br />
+→ 消费能力不够。<strong>加实例</strong> 或 <strong>提并发</strong>，别硬等。</p>
+<h2>⚠️ 不要做的事</h2>
+<ul>
+<li>❌ <strong>不要一上来就 <code>--from-beginning</code> 重读</strong> —— 生产 IO 压力巨大</li>
+<li>❌ <strong>不要先重置位移</strong> —— 会丢数据或重复处理</li>
+<li>❌ <strong>不要盲目扩容</strong> —— 没找到瓶颈，扩容只是把问题推迟</li>
+</ul>
+</section>
+
+<section id="sec10">
+  <div class="sec_head"><span class="sec_num">10</span><h2>复盘模板</h2><span class="sec_sub">四段式</span></div>
+  <blockquote>
+<p>复制这个文件，重命名为 <code>YYYY-MM-DD-主题.md</code>。<br />
+<strong>四行就够，别写长篇。</strong></p>
+</blockquote>
+<hr />
+<h1>YYYY-MM-DD · 标题（一句话说清是什么问题）</h1>
+<h2>现象</h2>
+<p>（用户/业务看到的是什么？用他们的语言描述，不是技术语言）</p>
+<h2>我查了什么</h2>
+<ol>
+<li>查了 ___，结果是 ___</li>
+<li>查了 ___，结果是 ___</li>
+<li>查了 ___，结果是 ___</li>
+</ol>
+<h2>根因</h2>
+<p>（一句话。说不出来就说明还没查到根因）</p>
+<h2>沉淀（可迁移）</h2>
+<p><strong>这部分最重要 —— 换一家厂还能用的东西。</strong></p>
+<ul>
+<li>判断方法：___</li>
+<li>下次遇到类似的，先查 ___</li>
+<li>避免再犯：___</li>
+</ul>
+<hr />
+<h2>写复盘的三条规矩</h2>
+<ol>
+<li><strong>脱敏</strong>：不写 IP、客户名、真实表名</li>
+<li><strong>写原因，不写过程</strong>：别人不需要知道你跑了 20 条命令</li>
+<li><strong>"沉淀"必须有内容</strong>：没有可迁移的东西，就说明这次没长本事</li>
+</ol>
+</section>
+
+<section id="sec11">
+  <div class="sec_head"><span class="sec_num">11</span><h2>半导体工艺流程</h2><span class="sec_sub">九大工艺 × 机台</span></div>
+  <blockquote>
+<p>从"流程"切入，不从"概念"切入。<strong>知道货怎么走，比背名词有用。</strong></p>
+</blockquote>
+<h2>芯片的一生</h2>
+<pre><code>硅石 → 提纯 → 单晶硅棒 → 切片研磨抛光 → 晶圆 Wafer
+   → 前道 FEOL（造晶体管）
+   → 中后道（连成电路）
+   → 晶圆测试 CP
+   → 切割 Dice
+   → 封装 → 成品芯片
+</code></pre>
+<h2>三层结构（别把"大类"当"步骤"）</h2>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>工艺大类</strong></td>
+<td>8~10 类</td>
+<td>氧化、光刻、刻蚀、薄膜、注入、扩散、CMP、清洗</td>
+</tr>
+<tr>
+<td><strong>一个循环</strong></td>
+<td>约 15 道工序</td>
+<td>光刻一层 + 配套</td>
+</tr>
+<tr>
+<td><strong>完整产品</strong></td>
+<td>800~1500 道</td>
+<td>循环 40~80 次</td>
+</tr>
+</tbody>
+</table>
+<h2>九大工艺 + 机台</h2>
+<table>
+<thead>
+<tr>
+<th>工艺</th>
+<th>干什么</th>
+<th>机台叫法</th>
+<th>区域</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>氧化</strong></td>
+<td>长 SiO₂</td>
+<td>氧化炉 Furnace</td>
+<td>扩散区</td>
+</tr>
+<tr>
+<td><strong>光刻</strong></td>
+<td>印图形</td>
+<td>Scanner + Track</td>
+<td>黄光区</td>
+</tr>
+<tr>
+<td><strong>刻蚀</strong></td>
+<td>刻出图形</td>
+<td>Etcher</td>
+<td>刻蚀区</td>
+</tr>
+<tr>
+<td><strong>薄膜</strong></td>
+<td>镀新材料</td>
+<td>CVD / PVD / ALD</td>
+<td>薄膜区</td>
+</tr>
+<tr>
+<td><strong>离子注入</strong></td>
+<td>掺杂质</td>
+<td>Implanter</td>
+<td>注入区</td>
+</tr>
+<tr>
+<td><strong>扩散/退火</strong></td>
+<td>激活杂质</td>
+<td>炉管 / RTP</td>
+<td>扩散区</td>
+</tr>
+<tr>
+<td><strong>CMP</strong></td>
+<td>磨平表面</td>
+<td>CMP 机台</td>
+<td>CMP 区</td>
+</tr>
+<tr>
+<td><strong>清洗</strong></td>
+<td>去污染</td>
+<td>湿式清洗机</td>
+<td>清洗区</td>
+</tr>
+<tr>
+<td><strong>量测</strong></td>
+<td>测尺寸/缺陷</td>
+<td>CD-SEM、膜厚仪</td>
+<td>量测区</td>
+</tr>
+</tbody>
+</table>
+<h2>一个循环长什么样（15 道）</h2>
+<p>清洗 → 淀积阻挡层 → 涂胶 → 软烘 → <strong>曝光</strong> → 曝后烘 → 显影 → 硬烘<br />
+→ 显影后检测 → 刻蚀 → 去胶 → 清洗 → CMP → 量测 → 缺陷检测</p>
+<p><strong>这只是"一层"。整颗芯片要循环 40~80 次。</strong></p>
+<h2>派工为什么要管这些</h2>
+<table>
+<thead>
+<tr>
+<th>工艺特点</th>
+<th>对派工的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>光刻是瓶颈、重入最多</td>
+<td>优先保瓶颈不待料</td>
+</tr>
+<tr>
+<td>炉管是批量机台</td>
+<td>要"凑批"，等 or 不等是权衡</td>
+</tr>
+<tr>
+<td>刻蚀/CVD 多腔体</td>
+<td>同批要走同腔（MultiChamber 规则）</td>
+</tr>
+<tr>
+<td>清洗后 Q-time 最紧</td>
+<td>洗完必须限时进下一道</td>
+</tr>
+<tr>
+<td>量测又贵又慢</td>
+<td>用抽样（Sampling），不是每批都测</td>
+</tr>
+</tbody>
+</table>
+<h2>要盯的五个指标</h2>
+<p><strong>WIP ｜ Cycle Time ｜ Move ｜ 瓶颈机台利用率 ｜ Yield</strong></p>
+</section>
+
+<section id="sec12">
+  <div class="sec_head"><span class="sec_num">12</span><h2>产出模板</h2><span class="sec_sub">给领导看的东西</span></div>
+  <blockquote>
+<p>这是"交给别人看"的东西，标准比复盘高。</p>
+</blockquote>
+<hr />
+<h1>标题：一句话说清这是什么</h1>
+<p><strong>作者 / 日期</strong>：</p>
+<p><strong>给谁看</strong>：</p>
+<h2>一、背景（为什么做这个）</h2>
+<p>三句话以内。说清问题和影响。</p>
+<h2>二、做了什么</h2>
+<h2>-</h2>
+<h2>三、结论 / 结果</h2>
+<p><strong>能用一句话说清吗？</strong> 不能就再想想。</p>
+<h2>四、后续</h2>
+<ul>
+<li>[ ] </li>
+</ul>
+<hr />
+<h2>《规则变更说明》专用模板</h2>
+<pre><code>需求来源：
+原来现象：
+改动内容：把 ___ 改成 ___
+影响面：涉及哪些产品 / 工序 / 机台
+模拟结果：指标变化
+上线时间：
+24 小时后观察：
+回滚方式：
+</code></pre>
+<hr />
+<h2>写"给领导看的东西"的三条规矩</h2>
+<ol>
+<li><strong>第一段就放结论</strong>，别铺垫</li>
+<li><strong>数字代替形容词</strong>："延迟从 8 分钟降到 40 秒"，不是"明显改善"</li>
+<li><strong>一定要有"影响"</strong>：这件事对业务/成本意味着什么</li>
+</ol>
+</section>
+  </main>
+</div>
+</body>
+</html>

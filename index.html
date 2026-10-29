@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>半导体平台运维知识库</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+<style>
+  :root{--theme-color:#0e7490}
+  .sidebar{background:#0f172a;color:#cbd5e1}
+  .sidebar a{color:#94a3b8}
+  .sidebar a:hover,.sidebar li.active>a{color:#22d3ee!important}
+  .sidebar-toggle{background:transparent}
+  body{background:#fff}
+  .markdown-section{max-width:860px;font-size:15px;line-height:1.85}
+  .markdown-section h1{border-bottom:2px solid #0e7490;padding-bottom:8px}
+  .markdown-section code{background:#f1f5f9;color:#0e7490;padding:2px 5px;border-radius:4px}
+  .markdown-section pre{background:#0f172a;border-radius:8px}
+  .markdown-section pre code{background:none;color:#e2e8f0}
+  .search input{background:#1e293b;color:#e2e8f0;border:1px solid #334155}
+</style>
+</head>
+<body>
+<div id="app">加载中…</div>
+<script>
+  window.$docsify = {
+    name: '半导体平台运维知识库',
+    repo: '',
+    loadSidebar: 'sidebar.md',
+    subMaxLevel: 2,
+    search: {
+      placeholder: '搜索…',
+      noData: '找不到',
+      depth: 3
+    },
+    copyCode: { buttonText: '复制' },
+    pagination: { previousText: '上一篇', nextText: '下一篇' }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
+</body>
+</html>
